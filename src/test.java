@@ -13,12 +13,16 @@ public class test implements ActionListener {
     JFrame loginFrame;
     JButton login;
 
+    JTextField loginUsername;
+    JPasswordField loginPassword;
+
     ////////---MAIN FRAME VARS---////////
     JFrame mainFrame;
 
     String username;
     String password;
 
+    JButton testLogout;
 
     public test() {
 ////////////////////////////////////---Login Window---////////////////////////////////////
@@ -57,30 +61,21 @@ public class test implements ActionListener {
         GridBagConstraints c = new GridBagConstraints();
 
 
-        JLabel loginULabel = new JLabel("Username: ");
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 0;
-        loginInput.add(loginULabel, c);
+        loginInput.add(new JLabel("Username: "), c);
 
-        JTextField loginUsername = new JTextField(15);
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridy = 1;
+        loginInput.add(new JLabel("Password: "), c);
+
+        loginUsername = new JTextField(15);
         c.gridwidth = 2;
         c.gridx = 1;
         c.gridy = 0;
         loginInput.add(loginUsername, c);
 
-        JLabel loginPLabel = new JLabel("Password: ");
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 1;
-        loginInput.add(loginPLabel, c);
-
-
-        JPasswordField loginPassword = new JPasswordField(15);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridwidth = 2;
-        c.gridx = 1;
+        loginPassword = new JPasswordField(15);
         c.gridy = 1;
         loginInput.add(loginPassword, c);
 
@@ -126,10 +121,11 @@ public class test implements ActionListener {
         Border userBorder = new TitledBorder("USERNAME");
         userInfoPanel.setBorder(userBorder);
 
-        JButton testLogout = new JButton("Logout");
+        testLogout = new JButton("Logout");
         testLogout.setBorderPainted(false);
         testLogout.setFocusPainted(false);
-        testLogout.setContentAreaFilled(false);
+        //testLogout.setContentAreaFilled(false);
+        testLogout.addActionListener(this);
 
         userInfoPanel.add(testLogout);
 
@@ -145,7 +141,14 @@ public class test implements ActionListener {
         Object control = e.getSource();
         if (control == login) {
             loginFrame.setVisible(false);
+
+            username = loginUsername.getText();
+
             mainFrame.setVisible(true);
+        }
+
+        if(control == testLogout) {
+            System.out.println("success");
         }
     }
 
