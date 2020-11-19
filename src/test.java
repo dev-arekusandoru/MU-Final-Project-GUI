@@ -1,22 +1,112 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.*;
 
 
-public class test {
+public class test implements ActionListener {
 
-    String[] courses = {"Calculus", "Debate", "Gov & Econ", "Spanish III"};
-    static DefaultListModel<String> Calc_hw_grades = new DefaultListModel<>();
+    boolean loggedIn = false;
+
+    ////////---LOGIN FRAME VARS---////////
+    JFrame loginFrame;
+    JButton login;
+
+    ////////---MAIN FRAME VARS---////////
+    JFrame mainFrame;
+
+    String username;
+    String password;
+
 
     public test() {
 ////////////////////////////////////---Login Window---////////////////////////////////////
-        JFrame mainFrame = new JFrame();
-        mainFrame.setTitle("Grade Book");
+        loginFrame = new JFrame();
+        loginFrame.setTitle("Login");
+
+        //sets the location of the initial window
+        loginFrame.setLocation(400, 150);
+        //mainFrame.setPreferredSize(new Dimension(250, 175));
+        loginFrame.setResizable(false);
+
+        //exits the program when the window is closed
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //gets the main content panel
+        JPanel mainLoginPanel = (JPanel) loginFrame.getContentPane();
+
+        //sets the layout of the mainPanel
+        mainLoginPanel.setLayout(new BoxLayout(mainLoginPanel, BoxLayout.Y_AXIS));
+
+        //creates and sets an empty border
+        Border emptyBorder = BorderFactory.createEmptyBorder(15, 15, 15, 15);
+        mainLoginPanel.setBorder(emptyBorder);
+
+        //
+        //login welcome panel
+        JPanel loginWelcomePanel = new JPanel();
+        Border emptyWelcomeBorder = BorderFactory.createEmptyBorder(0, 0, 15, 0);
+        loginWelcomePanel.setBorder(emptyWelcomeBorder);
+        loginWelcomePanel.add(new JLabel("Please sign in to continue."));
+
+        //
+        //Assignment type selection
+        JPanel loginInput = new JPanel();
+        loginInput.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+
+        JLabel loginULabel = new JLabel("Username: ");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        loginInput.add(loginULabel, c);
+
+        JTextField loginUsername = new JTextField(15);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 2;
+        c.gridx = 1;
+        c.gridy = 0;
+        loginInput.add(loginUsername, c);
+
+        JLabel loginPLabel = new JLabel("Password: ");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1;
+        loginInput.add(loginPLabel, c);
+
+
+        JPasswordField loginPassword = new JPasswordField(15);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 2;
+        c.gridx = 1;
+        c.gridy = 1;
+        loginInput.add(loginPassword, c);
+
+        //
+        //Add grade panel
+        JPanel loginButtonPanel = new JPanel();
+        login = new JButton("Login");
+        login.addActionListener(this);
+
+        loginButtonPanel.add(login);
+
+        //add all the panels in order
+        mainLoginPanel.add(loginWelcomePanel);
+        mainLoginPanel.add(loginInput);
+        mainLoginPanel.add(loginButtonPanel);
+
+        //finish frame
+        loginFrame.pack();
+        loginFrame.setVisible(true);
+//////////////////////////////////---Main User Window---//////////////////////////////////
+        mainFrame = new JFrame();
+        mainFrame.setTitle("Bank Application");
 
         //sets the location of the initial window
         mainFrame.setLocation(400, 150);
-        mainFrame.setSize(new Dimension(400, 450));
-        mainFrame.setResizable(false);
+        mainFrame.setPreferredSize(new Dimension(400, 450));
 
         //exits the program when the window is closed
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,68 +118,42 @@ public class test {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         //creates and sets an empty border
-        Border emptyBorder = BorderFactory.createEmptyBorder(15,15,15,15);
         mainPanel.setBorder(emptyBorder);
 
         //
-        //login welcome panel
-        JPanel loginWelcomePanel = new JPanel();
-        loginWelcomePanel.add(new JLabel("Please sign in to continue."));
+        //user info panel
+        JPanel userInfoPanel = new JPanel();
+        Border userBorder = new TitledBorder("USERNAME");
+        userInfoPanel.setBorder(userBorder);
 
-        //
-        //Assignment type selection
-        JPanel loginInput = new JPanel();
+        JButton testLogout = new JButton("Logout");
+        testLogout.setBorderPainted(false);
+        testLogout.setFocusPainted(false);
+        testLogout.setContentAreaFilled(false);
 
-        JTextField loginUsername = new JTextField();
-        JTextField loginPassword = new JTextField();
+        userInfoPanel.add(testLogout);
 
-        loginInput.add(loginUsername);
-        loginInput.add(loginPassword);
+        //add panels to main panel
+        mainPanel.add(userInfoPanel);
 
-        //
-        //Homework viewer
-        JPanel viewHw = new JPanel();
-
-        JList gradeViewer = new JList<String>(Calc_hw_grades);
-        gradeViewer.setPreferredSize(new Dimension(300, 200));
-        gradeViewer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-
-        JScrollPane gradeScroll = new JScrollPane(gradeViewer,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        viewHw.add(gradeScroll);
-
-        //
-        //Add grade panel
-        JPanel addGrade = new JPanel();
-        JButton add = new JButton("Add Grade");
-        JButton edit = new JButton("Edit Grade");
-        JButton delete = new JButton("Delete Grade");
-
-        addGrade.add(add);
-        addGrade.add(edit);
-        addGrade.add(delete);
-
-        //add all the panels in order
-        mainPanel.add(loginWelcomePanel);
-        mainPanel.add(loginInput);
-        mainPanel.add(viewHw);
-        mainPanel.add(addGrade);
-
-        //finish frame
         mainFrame.pack();
-        mainFrame.setVisible(true);
-//////////////////////////////////---Main User Window---//////////////////////////////////
+        mainFrame.setVisible(false);
 
     }
 
+    public void actionPerformed(ActionEvent e) {
+        Object control = e.getSource();
+        if (control == login) {
+            loginFrame.setVisible(false);
+            mainFrame.setVisible(true);
+        }
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-               new test();
+                new test();
             }
         });
 
