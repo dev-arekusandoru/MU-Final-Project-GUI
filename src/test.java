@@ -1,7 +1,4 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.LinkedList;
-import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -18,7 +15,8 @@ public class test {
 
         //sets the location of the initial window
         mainFrame.setLocation(400, 150);
-        mainFrame.setPreferredSize(new Dimension(400, 450));
+        mainFrame.setSize(new Dimension(400, 450));
+        mainFrame.setResizable(false);
 
         //exits the program when the window is closed
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,33 +32,19 @@ public class test {
         mainPanel.setBorder(emptyBorder);
 
         //
-        //Course selection panel
-        JPanel coursePanel = new JPanel();
-        JLabel choose = new JLabel("Choose a course to view: ");
-        JComboBox courseSelect = new JComboBox<String>(courses);
-
-        coursePanel.add(choose);
-        coursePanel.add(courseSelect);
+        //login welcome panel
+        JPanel loginWelcomePanel = new JPanel();
+        loginWelcomePanel.add(new JLabel("Please sign in to continue."));
 
         //
         //Assignment type selection
-        JPanel assignmentType = new JPanel();
+        JPanel loginInput = new JPanel();
 
-        JRadioButton hw = new JRadioButton("Homework");
-        JRadioButton quiz = new JRadioButton("Quiz");
-        JRadioButton test = new JRadioButton("Test/Presentation");
+        JTextField loginUsername = new JTextField();
+        JTextField loginPassword = new JTextField();
 
-        ButtonGroup assignmentTypeButtons = new ButtonGroup();
-
-        assignmentTypeButtons.add(hw);
-        assignmentTypeButtons.add(quiz);
-        assignmentTypeButtons.add(test);
-
-        hw.setSelected(true);
-
-        assignmentType.add(hw);
-        assignmentType.add(quiz);
-        assignmentType.add(test);
+        loginInput.add(loginUsername);
+        loginInput.add(loginPassword);
 
         //
         //Homework viewer
@@ -88,8 +72,8 @@ public class test {
         addGrade.add(delete);
 
         //add all the panels in order
-        mainPanel.add(coursePanel);
-        mainPanel.add(assignmentType);
+        mainPanel.add(loginWelcomePanel);
+        mainPanel.add(loginInput);
         mainPanel.add(viewHw);
         mainPanel.add(addGrade);
 
@@ -102,7 +86,12 @@ public class test {
 
 
     public static void main(String[] args) {
-        new test();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+               new test();
+            }
+        });
 
     }
 }
