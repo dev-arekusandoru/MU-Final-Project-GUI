@@ -70,34 +70,26 @@ public class test implements ActionListener {
         //Assignment type selection
         JPanel loginInput = new JPanel();
         loginInput.setBackground(Color.white);
-        loginInput.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 0;
-        loginInput.add(new JLabel("<html><font color='red'>Username: </font></html>"), c);
-
-        c.gridy = 1;
-        loginInput.add(new JLabel("Password: "), c);
+        loginInput.setLayout(new GridLayout(2, 1));
 
         loginUsername = new JTextField(15);
-        loginUsername.setSelectionColor(Color.black);
-        c.gridwidth = 2;
-        c.gridx = 1;
-        c.gridy = 0;
-        loginInput.add(loginUsername, c);
-
+        loginUsername.setBorder(new TitledBorder("Username"));
         loginPassword = new JPasswordField(15);
-        c.gridy = 1;
-        loginInput.add(loginPassword, c);
+        loginPassword.setBorder(new TitledBorder("Password"));
 
+        loginInput.add(loginUsername);
+        loginInput.add(loginPassword);
         //
         //login button panel
         JPanel loginButtonPanel = new JPanel();
+        loginButtonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         loginButtonPanel.setBackground(Color.white);
         login = new JButton("Login");
+        login.setPreferredSize(new Dimension(55, 30));
+        login.setOpaque(true);
+        login.setBackground(new Color(0, 80, 157));
+        login.setForeground(Color.white);
+        login.setBorder(new EmptyBorder(0,0,0,0));
         login.addActionListener(this);
 
         loginButtonPanel.add(login);
@@ -144,10 +136,10 @@ public class test implements ActionListener {
         // icon scaling from user 'tirz'
         // via https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel/16345968
         testLogout = new JButton("Logout");
-        testLogout.setIcon(new ImageIcon(new ImageIcon("icons/logout_icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        testLogout.setIcon(new ImageIcon(new ImageIcon("icons/logout_icon.png").getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
         testLogout.setHorizontalTextPosition(AbstractButton.LEADING);
-        testLogout.setPreferredSize(new Dimension(80, 100));
-        //testLogout.setBorder(new EtchedBorder());
+        testLogout.setPreferredSize(new Dimension(82, 40));
+        testLogout.setBorder(new EmptyBorder(0, 0, 0, 0));
         testLogout.addActionListener(this);
 
         userInfoPanel.add(userInfoLabel);
@@ -177,7 +169,7 @@ public class test implements ActionListener {
         mainPanel.add(userAccounts);
 
         mainFrame.pack();
-        mainFrame.setVisible(true);
+        mainFrame.setVisible(false);
 
 
     }
