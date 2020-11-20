@@ -5,7 +5,11 @@ import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.plaf.FontUIResource;
-
+/** 
+ * 
+ * @author: Alexandru Muresan
+ *
+**/
 
 public class test implements ActionListener {
 
