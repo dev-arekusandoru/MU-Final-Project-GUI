@@ -1,15 +1,16 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.plaf.FontUIResource;
-/** 
- * 
+
+/**
  * @author: Alexandru Muresan
- *
-**/
+ **/
 
 public class test implements ActionListener {
 
@@ -20,6 +21,7 @@ public class test implements ActionListener {
     ////////---LOGIN FRAME VARS---////////
     JFrame loginFrame;
     JButton login;
+    JButton newUser;
 
     JTextField loginUsername;
     JPasswordField loginPassword;
@@ -35,6 +37,19 @@ public class test implements ActionListener {
     JButton testLogout;
 
     JList accountViewer;
+
+    JButton view;
+    JButton create;
+    JButton delete;
+
+    ////////---MAIN FRAME VARS---////////
+    JFrame accountFrame;
+
+    JList historyViewer;
+
+    JButton deposit;
+    JButton withdraw;
+    JButton transfer;
 
     public test() {
         //set font to arial
@@ -68,7 +83,7 @@ public class test implements ActionListener {
         loginWelcomePanel.setBackground(Color.white);
         Border emptyWelcomeBorder = BorderFactory.createEmptyBorder(0, 0, 15, 0);
         loginWelcomePanel.setBorder(emptyWelcomeBorder);
-        loginWelcomePanel.add(new JLabel("Please sign in to continue."));
+        loginWelcomePanel.add(new JLabel("Please sign in or create a new account to continue."));
 
         //
         //Assignment type selection
@@ -89,13 +104,14 @@ public class test implements ActionListener {
         loginButtonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         loginButtonPanel.setBackground(Color.white);
         login = new JButton("Login");
-        login.setPreferredSize(new Dimension(55, 30));
-        login.setOpaque(true);
-        login.setBackground(new Color(0, 80, 157));
-        login.setForeground(Color.white);
-        login.setBorder(new EmptyBorder(0,0,0,0));
+        styleButton(login, 55, 30);
         login.addActionListener(this);
 
+        newUser = new JButton("New User");
+        styleButton(newUser, 80, 30);
+        newUser.addActionListener(this);
+
+        loginButtonPanel.add(newUser);
         loginButtonPanel.add(login);
 
         //add all the panels in order
@@ -140,10 +156,12 @@ public class test implements ActionListener {
         // icon scaling from user 'tirz'
         // via https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel/16345968
         testLogout = new JButton("Logout");
+        fixMouseOver(testLogout);
         testLogout.setIcon(new ImageIcon(new ImageIcon("icons/logout_icon.png").getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
         testLogout.setHorizontalTextPosition(AbstractButton.LEADING);
         testLogout.setPreferredSize(new Dimension(82, 40));
         testLogout.setBorder(new EmptyBorder(0, 0, 0, 0));
+
         testLogout.addActionListener(this);
 
         userInfoPanel.add(userInfoLabel);
@@ -152,11 +170,12 @@ public class test implements ActionListener {
 
         //
         //user account list
-        JPanel userAccounts = new JPanel();
-        userAccounts.setBackground(Color.white);
+        JPanel userAccountsPanel = new JPanel();
+        userAccountsPanel.setBackground(Color.white);
         Border accountBorder = new TitledBorder("Accounts");
 
         accountViewer = new JList<String>((ListModel<String>) testList);
+
         accountViewer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         accountViewer.setPreferredSize(new Dimension(325, 200));
@@ -164,18 +183,140 @@ public class test implements ActionListener {
         JScrollPane accountScroll = new JScrollPane(accountViewer,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        if(testList.size() <= 8){
+            accountScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        }
+
         accountScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         accountScroll.setBorder(accountBorder);
-        userAccounts.add(accountScroll);
+        userAccountsPanel.add(accountScroll);
+
+
+        //
+        // button panel for main frame
+        JPanel mainButtons = new JPanel();
+        mainButtons.setBackground(Color.white);
+        mainButtons.setLayout(new GridBagLayout());
+
+        view = new JButton("View Account");
+        styleButton(view, 55, 28);
+
+        create = new JButton("Create");
+        styleButton(create, 55, 28);
+
+        delete = new JButton("Delete");
+        styleButton(delete, 55, 28);
+
+        GridBagConstraints c = new GridBagConstraints();
+
+        view.addActionListener(this);
+        create.addActionListener(this);
+        delete.addActionListener(this);
+
+        c.insets = new Insets(5, 8, 0, 8);
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 2;
+        c.gridx = 0;
+        c.gridy = 0;
+        mainButtons.add(view, c);
+
+        c.gridy = 1;
+        c.gridwidth = 1;
+        mainButtons.add(create, c);
+
+        c.gridx = 1;
+        mainButtons.add(delete, c);
+
 
         //add panels to main panel
         mainPanel.add(userInfoPanel);
-        mainPanel.add(userAccounts);
+        mainPanel.add(userAccountsPanel);
+        mainPanel.add(mainButtons);
 
         mainFrame.pack();
         mainFrame.setVisible(false);
 
+//////////////////////////////////---Account View Window---//////////////////////////////////
+        accountFrame = new JFrame();
+        accountFrame.setTitle("Bank Application");
 
+        //sets the location of the initial window
+        accountFrame.setLocation(400, 150);
+        accountFrame.setPreferredSize(new Dimension(400, 450));
+        accountFrame.setResizable(false);
+
+        //exits the program when the window is closed
+        accountFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //gets the main content panel
+        JPanel mainAccountPanel = (JPanel) accountFrame.getContentPane();
+        mainAccountPanel.setBackground(Color.white);
+        //sets the layout of the mainPanel
+        mainAccountPanel.setLayout(new BoxLayout(mainAccountPanel, BoxLayout.Y_AXIS));
+
+        //creates and sets an empty border
+        mainAccountPanel.setBorder(emptyBorder);
+
+        //
+        //Account information panel
+        JPanel accountInfoPanel = new JPanel();
+        accountInfoPanel.setBackground(Color.white);
+        JLabel accountInfoLabel = new JLabel("Account Id: ");
+
+        accountInfoPanel.add(accountInfoLabel);
+
+        //transaction history default list model
+        JPanel transactionHistoryPanel = new JPanel();
+        transactionHistoryPanel.setBackground(Color.white);
+        Border historyBorder = new TitledBorder("Transaction History");
+
+        historyViewer = new JList<String>((ListModel<String>) testList);
+
+        historyViewer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        historyViewer.setPreferredSize(new Dimension(325, 200));
+
+        JScrollPane historyScroll = new JScrollPane(historyViewer,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        if(testList.size() <= 8){
+            historyScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        }
+        historyScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+        historyScroll.setBorder(accountBorder);
+
+        transactionHistoryPanel.add(historyScroll);
+
+        //
+        // account interaction buttons
+        JPanel accountInteractionPanel = new JPanel();
+        accountInteractionPanel.setBackground(Color.white);
+        deposit = new JButton("Deposit");
+        styleButton(deposit, 70, 28);
+
+        withdraw = new JButton("Withdraw");
+        styleButton(withdraw, 70, 28);
+
+        transfer = new JButton("Transfer");
+        styleButton(transfer, 70, 28);
+
+        deposit.addActionListener(this);
+        withdraw.addActionListener(this);
+        transfer.addActionListener(this);
+
+        accountInteractionPanel.add(deposit);
+        accountInteractionPanel.add(withdraw);
+        accountInteractionPanel.add(transfer);
+
+
+        //add panels to main content panel
+        mainAccountPanel.add(accountInfoPanel);
+        mainAccountPanel.add(transactionHistoryPanel);
+        mainAccountPanel.add(accountInteractionPanel);
+
+        accountFrame.pack();
+        accountFrame.setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -190,7 +331,9 @@ public class test implements ActionListener {
         }
 
         if (control == testLogout) {
-            System.out.println("success");
+            mainFrame.setVisible(false);
+
+            loginFrame.setVisible(true);
         }
     }
 
@@ -209,10 +352,33 @@ public class test implements ActionListener {
         }
     }
 
+    public void fixMouseOver(JButton j) {
+        j.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent evt) {
+                j.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+            public void mouseExited(MouseEvent evt) {
+                j.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
+    }
+    public void styleButton(JButton j, int w, int h) {
+        fixMouseOver(j);
+        j.setPreferredSize(new Dimension(w, h));
+        j.setOpaque(true);
+        j.setBackground(new Color(0, 80, 157));
+        j.setForeground(Color.white);
+        j.setBorder(new EmptyBorder(0, 0, 0, 0));
+    }
 
     public static void main(String[] args) {
-        testList.add(0, "hello");
-        testList.addElement("goodbye");
+        testList.add(0, "Checking 7396");
+        testList.addElement("Saving 8046");
+        testList.addElement("Saving 8047");
+        testList.addElement("Saving 8048");
+        testList.addElement("Saving 8049");
+        testList.addElement("Saving 8040");
+        testList.addElement("Saving 8041");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
