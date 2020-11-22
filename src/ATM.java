@@ -324,48 +324,74 @@ public class ATM implements ActionListener {
         mainAccountPanel.add(accountInteractionPanel);
 
         accountFrame.pack();
-        accountFrame.setVisible(true);
+        accountFrame.setVisible(false);
     }
 
     public void actionPerformed(ActionEvent e) {
 
         Object control = e.getSource();
         if (control == login) {
-            loginFrame.setVisible(false);
-            username = loginUsername.getText();
-            userInfoLabel.setText("Welcome, " + username);
+            boolean couldLog = loginCheck();
+            if(couldLog) {
+                loginFrame.setVisible(false);
+                userInfoLabel.setText("Welcome, " + username);
 
-            mainFrame.setVisible(true);
+                mainFrame.setVisible(true);
+            } else {
+                loginUsername.setText("");
+                loginPassword.setText("");
+                JOptionPane.showMessageDialog(null,
+                        "The username and/or password you entered were incorrect.",
+                        "User Not Found",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
 
         if (control == testLogout) {
             mainFrame.setVisible(false);
-
+            currentUser = null;
             loginFrame.setVisible(true);
         }
     }
 
-    public static boolean loginCheck(String u, String p) {
-        boolean userExists = false;
+    public boolean loginCheck() {
+        username = loginUsername.getText();
+        char[] passChars = loginPassword.getPassword();
+        String[] passStrings = new String[passChars.length];
+        for(int i = 0; i < passStrings.length; i++) {
+            passStrings[i] = String.valueOf(passChars[i]);
+        }
+        password = String.join("", passStrings);
+
+        StdOut.println(username + " " + password);
+
         for (int i = 0; i < users.size(); i++) {
             if (username.equals(users.get(i).getUsername())) {
-                currentUser = users.get(i);
-                userExists = true;
-                break;
+                if(password.equals(users.get(i).getPassword())) {
+                    currentUser = users.get(i);
+                    return true;
+                }
             }
 
         }
-        if (userExists) {
-            for (int i = 0; i < users.size(); i++) {
-                if (currentUser.getUsername().equals(users.get(i).getUsername())) {
-                    if (password.equals(users.get(i).getPassword())) {
-                        return true;
-                    }
-                }
-            }
-        }
         return false;
     }
+
+    public static void writeToDataFile() {
+        Out out = new Out("accountData.txt");
+        for (int i = 0; i < checkingAccounts.size(); i++) {
+            Checking c = checkingAccounts.get(i);
+            String toWrite = c.getAccountNumber() + "," + c.getAccountBalance() + "," + c.getTransactionHistory();
+            out.println(toWrite);
+        }
+        Out userOut = new Out("userData.txt");
+        for (int i = 0; i < users.size(); i++) {
+            String toWriteUser = users.get(i).getUsername() + "," + users.get(i).getPassword() + "," + users.get(i).accountIdsToStore;
+            userOut.println(toWriteUser);
+        }
+    }
+
+
 
     public static void setUIFont(FontUIResource f) {
         // font change method from Kumar Mitra
@@ -404,6 +430,25 @@ public class ATM implements ActionListener {
     }
 
     public static void main(String[] args) {
+
+        In accountsIn = new In("accountData.txt");
+        String[] storedAccountData = accountsIn.readAllLines();
+        for (int i = 0; i < storedAccountData.length; i++) {
+            String[] tempNewAccount = storedAccountData[i].split(",");
+            // store to accounts List
+            new Checking(Integer.parseInt(tempNewAccount[0]), Double.parseDouble(tempNewAccount[1]), tempNewAccount[2]);
+        }
+
+        // populate userData and users ArrayLists from userData.txt
+        In userIn = new In("userData.txt");
+        String[] storedUserData = userIn.readAllLines();
+        for (int i = 0; i < storedUserData.length; i++) {
+            String[] tempNewUser = storedUserData[i].split(",");
+            // store to userData
+            new User(tempNewUser[0], tempNewUser[1], tempNewUser[2]);
+        }
+
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
