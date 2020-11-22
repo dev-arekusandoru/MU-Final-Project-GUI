@@ -40,7 +40,7 @@ public class ATM implements ActionListener {
     public static String username;
     public static String password;
 
-    JButton testLogout;
+    JButton logout;
 
     JList accountViewer;
 
@@ -161,18 +161,18 @@ public class ATM implements ActionListener {
 
         // icon scaling from user 'tirz'
         // via https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel/16345968
-        testLogout = new JButton("Logout");
-        fixMouseOver(testLogout);
-        testLogout.setIcon(new ImageIcon(new ImageIcon("icons/logout_icon.png").getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
-        testLogout.setHorizontalTextPosition(AbstractButton.LEADING);
-        testLogout.setPreferredSize(new Dimension(82, 40));
-        testLogout.setBorder(new EmptyBorder(0, 0, 0, 0));
+        logout = new JButton("Logout");
+        fixMouseOver(logout);
+        logout.setIcon(new ImageIcon(new ImageIcon("icons/logout_icon.png").getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
+        logout.setHorizontalTextPosition(AbstractButton.LEADING);
+        logout.setPreferredSize(new Dimension(82, 40));
+        logout.setBorder(new EmptyBorder(0, 0, 0, 0));
 
-        testLogout.addActionListener(this);
+        logout.addActionListener(this);
 
         userInfoPanel.add(userInfoLabel);
         userInfoPanel.add(Box.createHorizontalGlue());
-        userInfoPanel.add(testLogout);
+        userInfoPanel.add(logout);
 
         //
         //user account list
@@ -347,11 +347,14 @@ public class ATM implements ActionListener {
             }
         }
 
-        if (control == testLogout) {
+        if (control == logout) {
             mainFrame.setVisible(false);
             currentUser = null;
             loginFrame.setVisible(true);
         }
+
+        //update data after every action, just for good measure
+        writeToDataFile();
     }
 
     public boolean loginCheck() {
