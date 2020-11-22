@@ -18,8 +18,11 @@ public class ATM implements ActionListener {
     public static ArrayList<Checking> checkingAccounts = new ArrayList<>();
     public static ArrayList<User> users = new ArrayList<>();
 
-    static DefaultListModel<String> accountsModel = new DefaultListModel<>();
-    static DefaultListModel<String> historyModel = new DefaultListModel<>();
+    public static DefaultListModel<String> accountsModel = new DefaultListModel<>();
+    public static DefaultListModel<String> historyModel = new DefaultListModel<>();
+
+    public static User currentUser = null;
+    public static Checking currentAccount = null;
 
     ////////---LOGIN FRAME VARS---////////
     JFrame loginFrame;
@@ -342,32 +345,27 @@ public class ATM implements ActionListener {
         }
     }
 
-    public static void loginCheck(String u, String p) {
-
+    public static boolean loginCheck(String u, String p) {
+        boolean userExists = false;
         for (int i = 0; i < users.size(); i++) {
             if (username.equals(users.get(i).getUsername())) {
                 currentUser = users.get(i);
-                foundAccount = true;
+                userExists = true;
                 break;
-            }
-            if (i == (users.size() - 1) && (!foundAccount)) {
-                StdOut.println("There is no account with that username. \nPlease try another username.");
             }
 
         }
-        for (int i = 0; i < users.size(); i++) {
-            if (currentUserUsername.equals(users.get(i).getUsername())) {
-                if (currentUserPassword.equals(users.get(i).getPassword())) {
-                    currentUserPassword = users.get(i).getPassword();
-                    foundPassword = true;
-                    login = false;
-                } else {
-                    StdOut.println("Incorrect password. Please try again.");
+        if (userExists) {
+            for (int i = 0; i < users.size(); i++) {
+                if (currentUser.getUsername().equals(users.get(i).getUsername())) {
+                    if (password.equals(users.get(i).getPassword())) {
+                        return true;
+                    }
                 }
             }
         }
+        return false;
     }
-
 
     public static void setUIFont(FontUIResource f) {
         // font change method from Kumar Mitra

@@ -1,0 +1,7 @@
+9012,100.0,Account created: 10-11-2020 : 00:35@12-11-2020 : 08:04 - deposited $100.0
+1760,0.0,Account created: 10-11-2020 : 00:39
+6884,0.0,Account created: 10-11-2020 : 01:03
+6560,0.0,Account created: 10-11-2020 : 12:12
+2230,20.0,Account created - 12-11-2020 : 12:42@12-11-2020 : 12:42 - deposited $20.0
+8037,9999976.55,Account created - 21-11-2020 : 10:19@21-11-2020 : 10:20 - deposited $1.0E7@21-11-2020 : 10:21 - transferred $23.45 to 7327
+7327,23.45,Account created - 21-11-2020 : 10:20@21-11-2020 : 10:21 - received $23.45 transfer from 8037

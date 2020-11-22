@@ -87,7 +87,7 @@ public class User {
         return username;
     }
 
-    public void changeUsername(String nU) {
+    /**public void changeUsername(String nU) {
         boolean canUse = ATM.checkCanUseUsername(nU);
         String input = "";
         while (!canUse) {
@@ -96,7 +96,7 @@ public class User {
             canUse = ATM.checkCanUseUsername(input);
         }
         username = nU;
-    }
+    }**/
 
     public String getPassword() {
         return password;
