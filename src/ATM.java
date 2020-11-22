@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -12,11 +13,13 @@ import javax.swing.plaf.FontUIResource;
  * @author: Alexandru Muresan
  **/
 
-public class test implements ActionListener {
+public class ATM implements ActionListener {
 
-    boolean loggedIn = false;
+    public static ArrayList<Checking> checkingAccounts = new ArrayList<>();
+    public static ArrayList<User> users = new ArrayList<>();
 
-    static DefaultListModel<String> testList = new DefaultListModel<>();
+    static DefaultListModel<String> accountsModel = new DefaultListModel<>();
+    static DefaultListModel<String> historyModel = new DefaultListModel<>();
 
     ////////---LOGIN FRAME VARS---////////
     JFrame loginFrame;
@@ -31,8 +34,8 @@ public class test implements ActionListener {
 
     JLabel userInfoLabel;
 
-    String username;
-    String password;
+    public static String username;
+    public static String password;
 
     JButton testLogout;
 
@@ -51,7 +54,7 @@ public class test implements ActionListener {
     JButton withdraw;
     JButton transfer;
 
-    public test() {
+    public ATM() {
         //set font to arial
         setUIFont(new FontUIResource(new Font("Arial", 0, 15)));
 ////////////////////////////////////---Login Window---////////////////////////////////////
@@ -174,7 +177,7 @@ public class test implements ActionListener {
         userAccountsPanel.setBackground(Color.white);
         Border accountBorder = new TitledBorder("Accounts");
 
-        accountViewer = new JList<String>((ListModel<String>) testList);
+        accountViewer = new JList<String>((ListModel<String>) accountsModel);
 
         accountViewer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -183,7 +186,7 @@ public class test implements ActionListener {
         JScrollPane accountScroll = new JScrollPane(accountViewer,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        if(testList.size() <= 8){
+        if (accountsModel.size() <= 8) {
             accountScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         }
 
@@ -261,17 +264,19 @@ public class test implements ActionListener {
         //
         //Account information panel
         JPanel accountInfoPanel = new JPanel();
+        accountInfoPanel.setLayout(new BoxLayout(accountInfoPanel, BoxLayout.X_AXIS));
         accountInfoPanel.setBackground(Color.white);
         JLabel accountInfoLabel = new JLabel("Account Id: ");
 
         accountInfoPanel.add(accountInfoLabel);
+        accountInfoPanel.add(Box.createHorizontalGlue());
 
         //transaction history default list model
         JPanel transactionHistoryPanel = new JPanel();
         transactionHistoryPanel.setBackground(Color.white);
         Border historyBorder = new TitledBorder("Transaction History");
 
-        historyViewer = new JList<String>((ListModel<String>) testList);
+        historyViewer = new JList<String>((ListModel<String>) historyModel);
 
         historyViewer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -280,11 +285,11 @@ public class test implements ActionListener {
         JScrollPane historyScroll = new JScrollPane(historyViewer,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        if(testList.size() <= 8){
+        if (historyModel.size() <= 8) {
             historyScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         }
         historyScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
-        historyScroll.setBorder(accountBorder);
+        historyScroll.setBorder(historyBorder);
 
         transactionHistoryPanel.add(historyScroll);
 
@@ -337,9 +342,36 @@ public class test implements ActionListener {
         }
     }
 
-    // font change method from Kumar Mitra
-    // via: https://stackoverflow.com/questions/12730230/set-the-same-font-for-all-component-java
+    public static void loginCheck(String u, String p) {
+
+        for (int i = 0; i < users.size(); i++) {
+            if (username.equals(users.get(i).getUsername())) {
+                currentUser = users.get(i);
+                foundAccount = true;
+                break;
+            }
+            if (i == (users.size() - 1) && (!foundAccount)) {
+                StdOut.println("There is no account with that username. \nPlease try another username.");
+            }
+
+        }
+        for (int i = 0; i < users.size(); i++) {
+            if (currentUserUsername.equals(users.get(i).getUsername())) {
+                if (currentUserPassword.equals(users.get(i).getPassword())) {
+                    currentUserPassword = users.get(i).getPassword();
+                    foundPassword = true;
+                    login = false;
+                } else {
+                    StdOut.println("Incorrect password. Please try again.");
+                }
+            }
+        }
+    }
+
+
     public static void setUIFont(FontUIResource f) {
+        // font change method from Kumar Mitra
+        // via: https://stackoverflow.com/questions/12730230/set-the-same-font-for-all-component-java
         Enumeration keys = UIManager.getDefaults().keys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
@@ -357,11 +389,13 @@ public class test implements ActionListener {
             public void mouseEntered(MouseEvent evt) {
                 j.setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
+
             public void mouseExited(MouseEvent evt) {
                 j.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
     }
+
     public void styleButton(JButton j, int w, int h) {
         fixMouseOver(j);
         j.setPreferredSize(new Dimension(w, h));
@@ -372,17 +406,10 @@ public class test implements ActionListener {
     }
 
     public static void main(String[] args) {
-        testList.add(0, "Checking 7396");
-        testList.addElement("Saving 8046");
-        testList.addElement("Saving 8047");
-        testList.addElement("Saving 8048");
-        testList.addElement("Saving 8049");
-        testList.addElement("Saving 8040");
-        testList.addElement("Saving 8041");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new test();
+                new ATM();
             }
         });
 
