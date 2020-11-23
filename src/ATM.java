@@ -342,6 +342,56 @@ public class ATM implements ActionListener {
 
 //////////////////////////////////---New User Window---//////////////////////////////////
         newUserFrame = new JFrame();
+        newUserFrame.setTitle("New User");
+
+        //sets the location of the initial window
+        newUserFrame.setLocation(400, 150);
+        //mainFrame.setPreferredSize(new Dimension(250, 175));
+        newUserFrame.setResizable(false);
+
+        //exits the program when the window is closed
+        newUserFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //gets the main content panel
+        JPanel newUserMainPanel = (JPanel) newUserFrame.getContentPane();
+        newUserMainPanel.setBackground(Color.white);
+
+        //sets the layout of the mainPanel
+        newUserMainPanel.setLayout(new BoxLayout(newUserMainPanel, BoxLayout.Y_AXIS));
+
+        //creates and sets an empty border
+        newUserMainPanel.setBorder(emptyBorder);
+
+        JPanel newUserWelcomePanel = new JPanel();
+        newUserWelcomePanel.setBackground(Color.white);
+        newUserWelcomePanel.add(new JLabel("Enter a username and password to create your account."));
+
+        JPanel newUserInput = new JPanel();
+        newUserInput.setBackground(Color.white);
+        newUserInput.setLayout(new GridLayout(2, 1));
+
+        newUserUsername = new JTextField(15);
+        newUserUsername.setBorder(new TitledBorder("Username"));
+        newUserPassword = new JPasswordField(15);
+        newUserPassword.setBorder(new TitledBorder("Password"));
+
+        newUserInput.add(newUserUsername);
+        newUserInput.add(newUserPassword);
+
+        JPanel newUserButtonPanel = new JPanel();
+        newUserButtonPanel.setBackground(Color.white);
+        createUser = new Button("Create User", 150, 30);
+        createUser.addActionListener(this);
+
+        newUserButtonPanel.add(createUser);
+
+        //add panels to main content panel
+        newUserMainPanel.add(newUserWelcomePanel);
+        newUserMainPanel.add(newUserInput);
+        newUserMainPanel.add(newUserButtonPanel);
+
+        newUserFrame.pack();
+        newUserFrame.setVisible(false);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -361,6 +411,23 @@ public class ATM implements ActionListener {
                         "The username and/or password you entered were incorrect.",
                         "User Not Found",
                         JOptionPane.WARNING_MESSAGE);
+            }
+        }
+
+        if(control == newUser) {
+            newUserFrame.setVisible(true);
+        }
+
+        if(control == createUser) {
+            boolean success = checkCanUseUsername(newUserUsername.getText());
+            if(success) {
+                char[] passChars = newUserPassword.getPassword();
+                String[] passStrings = new String[passChars.length];
+                for (int i = 0; i < passStrings.length; i++) {
+                    passStrings[i] = String.valueOf(passChars[i]);
+                }
+                String newP = String.join("", passStrings);
+                User newU = new User(newUserUsername.getText(), newP);
             }
         }
 
@@ -512,7 +579,16 @@ public class ATM implements ActionListener {
         return false;
     }
 
-    public static void writeToDataFile() {
+    public boolean checkCanUseUsername(String u) {
+        for (int i = 0; i < users.size(); i++) {
+            if (u.equals(users.get(i).getUsername())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void writeToDataFile() {
         Out out = new Out("accountData.txt");
         for (int i = 0; i < checkingAccounts.size(); i++) {
             Checking c = checkingAccounts.get(i);
