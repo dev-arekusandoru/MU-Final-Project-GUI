@@ -350,7 +350,7 @@ public class ATM implements ActionListener {
         newUserFrame.setResizable(false);
 
         //exits the program when the window is closed
-        newUserFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        newUserFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         //gets the main content panel
         JPanel newUserMainPanel = (JPanel) newUserFrame.getContentPane();
@@ -428,6 +428,18 @@ public class ATM implements ActionListener {
                 }
                 String newP = String.join("", passStrings);
                 User newU = new User(newUserUsername.getText(), newP);
+                newUserFrame.setVisible(false);
+                JOptionPane.showMessageDialog(null,
+                        "Account Created." +
+                                "\nUsername: " + newU.getUsername() +
+                                "\nPassword: " + newU.getPassword(),
+                        "Account Created",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "That username is already taken.",
+                        "Username Taken",
+                        JOptionPane.WARNING_MESSAGE);
             }
         }
 
