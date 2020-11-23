@@ -19,7 +19,7 @@ public class Button extends JButton {
         super.setPreferredSize(new Dimension(w, h));
         super.setOpaque(true);
         super.setBackground(new Color(0, 80, 157));
-        super.setForeground(Color.white);
+        super.setForeground(ATM.themeC);
         super.setBorder(new EmptyBorder(0, 0, 0, 0));
 
     }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 
 /**
@@ -23,6 +24,10 @@ public class ATM implements ActionListener {
 
     public static User currentUser = null;
     public static Checking currentAccount = null;
+
+    public static Color themeC = new Color(35, 35, 35);
+    public static Color themeCinv = new Color(235, 235, 235);
+
 
     ////////---LOGIN FRAME VARS---////////
     JFrame loginFrame;
@@ -58,6 +63,8 @@ public class ATM implements ActionListener {
     Button create;
     Button delete;
 
+    JButton settings;
+
     ////////---ACCOUNT FRAME VARS---////////
     JFrame accountFrame;
     JLabel accountInfoLabel;
@@ -69,9 +76,29 @@ public class ATM implements ActionListener {
     Button withdraw;
     Button transfer;
 
+    ////////---SETTINGS FRAME VARS---////////
+    JFrame settingsFrame;
+
+    Button changeUsername;
+    Button changePassword;
+    Button deleteAccount;
+    Button theme;
+
+
     public ATM() {
         //set font to arial
         setUIFont(new FontUIResource(new Font("Arial", 0, 15)));
+        //set optionpanes to theme
+        UIManager UI = new UIManager();
+        UI.put("OptionPane.background", new ColorUIResource(themeC));
+        UI.put("Panel.background", new ColorUIResource(themeC));
+        UI.put("Label.foreground", new ColorUIResource(themeCinv));
+        UI.put("TitledBorder.titleColor", new ColorUIResource(themeCinv));
+        UI.put("ScrollPane.background", new ColorUIResource(themeC));
+        UI.put("List.foreground", new ColorUIResource(themeCinv));
+        UI.put("List.background", new ColorUIResource(themeCinv));
+        UI.put("Button.foreground", new ColorUIResource(themeCinv));
+        UI.put("TextField.background.", new ColorUIResource(themeC));
 ////////////////////////////////////---Login Window---////////////////////////////////////
         loginFrame = new JFrame();
         loginFrame.setTitle("Login");
@@ -86,7 +113,6 @@ public class ATM implements ActionListener {
 
         //gets the main content panel
         JPanel mainLoginPanel = (JPanel) loginFrame.getContentPane();
-        mainLoginPanel.setBackground(Color.white);
 
         //sets the layout of the mainPanel
         mainLoginPanel.setLayout(new BoxLayout(mainLoginPanel, BoxLayout.Y_AXIS));
@@ -98,7 +124,6 @@ public class ATM implements ActionListener {
         //
         //login welcome panel
         JPanel loginWelcomePanel = new JPanel();
-        loginWelcomePanel.setBackground(Color.white);
         Border emptyWelcomeBorder = BorderFactory.createEmptyBorder(0, 0, 15, 0);
         loginWelcomePanel.setBorder(emptyWelcomeBorder);
         loginWelcomePanel.add(new JLabel("Please sign in or create a new account to continue."));
@@ -106,11 +131,13 @@ public class ATM implements ActionListener {
         //
         //Assignment type selection
         JPanel loginInput = new JPanel();
-        loginInput.setBackground(Color.white);
         loginInput.setLayout(new GridLayout(2, 1));
 
+        TitledBorder t1 = new TitledBorder("Username");
+        t1.setTitleColor(themeCinv);
+
         loginUsername = new JTextField(15);
-        loginUsername.setBorder(new TitledBorder("Username"));
+        loginUsername.setBorder(t1);
         loginPassword = new JPasswordField(15);
         loginPassword.setBorder(new TitledBorder("Password"));
 
@@ -120,7 +147,6 @@ public class ATM implements ActionListener {
         //login button panel
         JPanel loginButtonPanel = new JPanel();
         loginButtonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
-        loginButtonPanel.setBackground(Color.white);
         login = new Button("Login", 55, 30);
         login.addActionListener(this);
 
@@ -152,7 +178,6 @@ public class ATM implements ActionListener {
 
         //gets the main content panel
         JPanel mainPanel = (JPanel) mainFrame.getContentPane();
-        mainPanel.setBackground(Color.white);
         //sets the layout of the mainPanel
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -162,7 +187,6 @@ public class ATM implements ActionListener {
         //
         //user info panel
         JPanel userInfoPanel = new JPanel();
-        userInfoPanel.setBackground(Color.white);
         userInfoPanel.setLayout(new BoxLayout(userInfoPanel, BoxLayout.X_AXIS));
         userInfoPanel.setBorder(new EmptyBorder(0, 0, 15, 0));
 
@@ -195,7 +219,6 @@ public class ATM implements ActionListener {
         //
         //user account list
         JPanel userAccountsPanel = new JPanel();
-        userAccountsPanel.setBackground(Color.white);
         Border accountBorder = new TitledBorder("Accounts");
 
         accountViewer = new JList<String>((ListModel<String>) accountsModel);
@@ -219,7 +242,6 @@ public class ATM implements ActionListener {
         //
         // button panel for main frame
         JPanel mainButtons = new JPanel();
-        mainButtons.setBackground(Color.white);
         mainButtons.setLayout(new GridBagLayout());
 
         view = new Button("View Account", 55, 28);
@@ -248,11 +270,32 @@ public class ATM implements ActionListener {
         c.gridx = 1;
         mainButtons.add(delete, c);
 
+        JPanel settingsPanel = new JPanel();
+        settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.X_AXIS));
+
+        settings = new JButton("");
+        settings.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent evt) {
+                settings.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            public void mouseExited(MouseEvent evt) {
+                settings.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
+        settings.setIcon(new ImageIcon(new ImageIcon("icons/settings_icon.png").getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        settings.setPreferredSize(new Dimension(40, 40));
+        settings.setBorder(new EmptyBorder(0, 0, 0, 0));
+        settings.addActionListener(this);
+
+        settingsPanel.add(Box.createHorizontalGlue());
+        settingsPanel.add(settings);
 
         //add panels to main panel
         mainPanel.add(userInfoPanel);
         mainPanel.add(userAccountsPanel);
         mainPanel.add(mainButtons);
+        mainPanel.add(settingsPanel);
 
         mainFrame.pack();
         mainFrame.setVisible(false);
@@ -271,7 +314,6 @@ public class ATM implements ActionListener {
 
         //gets the main content panel
         JPanel mainAccountPanel = (JPanel) accountFrame.getContentPane();
-        mainAccountPanel.setBackground(Color.white);
         //sets the layout of the mainPanel
         mainAccountPanel.setLayout(new BoxLayout(mainAccountPanel, BoxLayout.Y_AXIS));
 
@@ -282,7 +324,6 @@ public class ATM implements ActionListener {
         //Account information panel
         JPanel accountInfoPanel = new JPanel();
         accountInfoPanel.setLayout(new GridLayout(2, 2));
-        accountInfoPanel.setBackground(Color.white);
         accountInfoLabel = new JLabel("Account Id: ");
         accountBalanceLabel = new JLabel();
 
@@ -293,7 +334,6 @@ public class ATM implements ActionListener {
 
         //transaction history default list model
         JPanel transactionHistoryPanel = new JPanel();
-        transactionHistoryPanel.setBackground(Color.white);
         Border historyBorder = new TitledBorder("Transaction History");
 
         historyViewer = new JList<String>((ListModel<String>) historyModel);
@@ -316,7 +356,6 @@ public class ATM implements ActionListener {
         //
         // account interaction buttons
         JPanel accountInteractionPanel = new JPanel();
-        accountInteractionPanel.setBackground(Color.white);
         deposit = new Button("Deposit", 70, 28);
 
         withdraw = new Button("Withdraw", 70, 28);
@@ -354,7 +393,6 @@ public class ATM implements ActionListener {
 
         //gets the main content panel
         JPanel newUserMainPanel = (JPanel) newUserFrame.getContentPane();
-        newUserMainPanel.setBackground(Color.white);
 
         //sets the layout of the mainPanel
         newUserMainPanel.setLayout(new BoxLayout(newUserMainPanel, BoxLayout.Y_AXIS));
@@ -363,11 +401,9 @@ public class ATM implements ActionListener {
         newUserMainPanel.setBorder(emptyBorder);
 
         JPanel newUserWelcomePanel = new JPanel();
-        newUserWelcomePanel.setBackground(Color.white);
         newUserWelcomePanel.add(new JLabel("Enter a username and password to create your account."));
 
         JPanel newUserInput = new JPanel();
-        newUserInput.setBackground(Color.white);
         newUserInput.setLayout(new GridLayout(2, 1));
 
         newUserUsername = new JTextField(15);
@@ -379,7 +415,6 @@ public class ATM implements ActionListener {
         newUserInput.add(newUserPassword);
 
         JPanel newUserButtonPanel = new JPanel();
-        newUserButtonPanel.setBackground(Color.white);
         createUser = new Button("Create User", 150, 30);
         createUser.addActionListener(this);
 
@@ -392,6 +427,36 @@ public class ATM implements ActionListener {
 
         newUserFrame.pack();
         newUserFrame.setVisible(false);
+
+//////////////////////////////////---Settings Window---//////////////////////////////////
+        JFrame settingsFrame = new JFrame();
+        settingsFrame.setTitle("New User");
+
+        //sets the location of the initial window
+        settingsFrame.setLocation(400, 150);
+        //mainFrame.setPreferredSize(new Dimension(250, 175));
+        settingsFrame.setResizable(false);
+
+        //exits the program when the window is closed
+        settingsFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+        //gets the main content panel
+        JPanel settingsMainPanel = (JPanel) settingsFrame.getContentPane();
+
+        //sets the layout of the mainPanel
+        settingsMainPanel.setLayout(new BoxLayout(settingsMainPanel, BoxLayout.Y_AXIS));
+
+        //creates and sets an empty border
+        settingsMainPanel.setBorder(emptyBorder);
+
+        JPanel settingsButtons = new JPanel();
+
+
+        settingsMainPanel.add(settingsButtons);
+
+        settingsFrame.pack();
+        settingsFrame.setVisible(false);
+
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -404,6 +469,8 @@ public class ATM implements ActionListener {
                 userInfoLabel.setText("Welcome, " + username);
                 updateAccounts();
                 mainFrame.setVisible(true);
+                loginUsername.setText("");
+                loginPassword.setText("");
             } else {
                 loginUsername.setText("");
                 loginPassword.setText("");
@@ -414,13 +481,13 @@ public class ATM implements ActionListener {
             }
         }
 
-        if(control == newUser) {
+        if (control == newUser) {
             newUserFrame.setVisible(true);
         }
 
-        if(control == createUser) {
+        if (control == createUser) {
             boolean success = checkCanUseUsername(newUserUsername.getText());
-            if(success) {
+            if (success) {
                 char[] passChars = newUserPassword.getPassword();
                 String[] passStrings = new String[passChars.length];
                 for (int i = 0; i < passStrings.length; i++) {
@@ -453,20 +520,23 @@ public class ATM implements ActionListener {
         }
 
         if (control == view) {
-            String accString = String.valueOf(accountViewer.getSelectedValue());
-            accString = accString.substring(accString.length() - 4, accString.length());
-            int viewAccNum = Integer.parseInt(accString);
-            for (int i = 0; i < currentUser.userCheckingAccounts.size(); i++) {
-                if (viewAccNum == currentUser.userCheckingAccounts.get(i).getAccountNumber()) {
-                    currentAccount = currentUser.userCheckingAccounts.get(i);
+            if (!accountViewer.isSelectionEmpty()) {
+                String accString = String.valueOf(accountViewer.getSelectedValue());
+                accString = accString.substring(accString.length() - 4, accString.length());
+                int viewAccNum = Integer.parseInt(accString);
+                for (int i = 0; i < currentUser.userCheckingAccounts.size(); i++) {
+                    if (viewAccNum == currentUser.userCheckingAccounts.get(i).getAccountNumber()) {
+                        currentAccount = currentUser.userCheckingAccounts.get(i);
+                    }
                 }
-            }
 
-            updateHistory();
-            accountFrame.setTitle(String.valueOf(currentAccount.getAccountNumber()));
-            accountInfoLabel.setText("Account ID: " + currentAccount.getAccountNumber());
-            accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
-            accountFrame.setVisible(true);
+
+                updateHistory();
+                accountFrame.setTitle(String.valueOf(currentAccount.getAccountNumber()));
+                accountInfoLabel.setText("Account ID: " + currentAccount.getAccountNumber());
+                accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
+                accountFrame.setVisible(true);
+            }
         }
 
         if (control == create) {
