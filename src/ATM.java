@@ -44,6 +44,8 @@ public class ATM implements ActionListener {
 
     JList accountViewer;
 
+    JScrollPane accountScroll;
+
     Button view;
     Button create;
     Button delete;
@@ -136,7 +138,7 @@ public class ATM implements ActionListener {
         mainFrame.setResizable(false);
 
         //exits the program when the window is closed
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         //gets the main content panel
         JPanel mainPanel = (JPanel) mainFrame.getContentPane();
@@ -192,7 +194,7 @@ public class ATM implements ActionListener {
 
         accountViewer.setPreferredSize(new Dimension(325, 200));
 
-        JScrollPane accountScroll = new JScrollPane(accountViewer,
+        accountScroll = new JScrollPane(accountViewer,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         if (accountsModel.size() <= 8) {
@@ -250,12 +252,12 @@ public class ATM implements ActionListener {
         accountFrame.setTitle("Bank Application");
 
         //sets the location of the initial window
-        accountFrame.setLocation(400, 150);
-        accountFrame.setPreferredSize(new Dimension(400, 450));
+        accountFrame.setLocation(450, 200);
+        accountFrame.setPreferredSize(new Dimension(400, 325));
         accountFrame.setResizable(false);
 
         //exits the program when the window is closed
-        accountFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        accountFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         //gets the main content panel
         JPanel mainAccountPanel = (JPanel) accountFrame.getContentPane();
@@ -331,10 +333,10 @@ public class ATM implements ActionListener {
         Object control = e.getSource();
         if (control == login) {
             boolean couldLog = loginCheck();
-            if(couldLog) {
+            if (couldLog) {
                 loginFrame.setVisible(false);
                 userInfoLabel.setText("Welcome, " + username);
-
+                updateAccounts();
                 mainFrame.setVisible(true);
             } else {
                 loginUsername.setText("");
@@ -347,10 +349,28 @@ public class ATM implements ActionListener {
         }
 
         if (control == logout) {
+            loginUsername.setText("");
+            loginPassword.setText("");
             mainFrame.setVisible(false);
+            accountFrame.setVisible(false);
             currentUser = null;
             loginFrame.setVisible(true);
         }
+
+        if (control == view) {
+            String accString = String.valueOf(accountViewer.getSelectedValue());
+            accString = accString.substring(accString.length() - 4, accString.length());
+            int viewAccNum = Integer.parseInt(accString);
+            for (int i = 0; i < currentUser.userCheckingAccounts.size(); i++) {
+                if (viewAccNum == currentUser.userCheckingAccounts.get(i).getAccountNumber()) {
+                    currentAccount = currentUser.userCheckingAccounts.get(i);
+                }
+            }
+
+            updateHistory();
+            accountFrame.setVisible(true);
+        }
+
 
         //update data after every action, just for good measure
         writeToDataFile();
@@ -360,7 +380,7 @@ public class ATM implements ActionListener {
         username = loginUsername.getText();
         char[] passChars = loginPassword.getPassword();
         String[] passStrings = new String[passChars.length];
-        for(int i = 0; i < passStrings.length; i++) {
+        for (int i = 0; i < passStrings.length; i++) {
             passStrings[i] = String.valueOf(passChars[i]);
         }
         password = String.join("", passStrings);
@@ -369,7 +389,7 @@ public class ATM implements ActionListener {
 
         for (int i = 0; i < users.size(); i++) {
             if (username.equals(users.get(i).getUsername())) {
-                if(password.equals(users.get(i).getPassword())) {
+                if (password.equals(users.get(i).getPassword())) {
                     currentUser = users.get(i);
                     return true;
                 }
@@ -393,7 +413,27 @@ public class ATM implements ActionListener {
         }
     }
 
+    public void updateAccounts() {
+        accountsModel.clear();
+        for (int i = 0; i < currentUser.userCheckingAccounts.size(); i++) {
+            if (currentUser.userCheckingAccounts.get(i) instanceof Saving) {
+                accountsModel.addElement("Saving: " + currentUser.userCheckingAccounts.get(i).getAccountNumber());
+            }
+            else {
+                accountsModel.addElement("Checking: " + currentUser.userCheckingAccounts.get(i).getAccountNumber());
+            }
+        }
+        accountScroll.updateUI();
+    }
 
+    public void updateHistory() {
+        historyModel.clear();
+        String[] h = currentAccount.getTransactionHistory().split("@");
+        for (int i = 0; i < h.length; i++) {
+            historyModel.addElement(h[i]);
+        }
+        historyViewer.updateUI();
+    }
 
     public static void setUIFont(FontUIResource f) {
         // font change method from Kumar Mitra
