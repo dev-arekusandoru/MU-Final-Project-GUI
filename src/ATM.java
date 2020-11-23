@@ -26,8 +26,8 @@ public class ATM implements ActionListener {
 
     ////////---LOGIN FRAME VARS---////////
     JFrame loginFrame;
-    JButton login;
-    JButton newUser;
+    Button login;
+    Button newUser;
 
     JTextField loginUsername;
     JPasswordField loginPassword;
@@ -44,18 +44,18 @@ public class ATM implements ActionListener {
 
     JList accountViewer;
 
-    JButton view;
-    JButton create;
-    JButton delete;
+    Button view;
+    Button create;
+    Button delete;
 
     ////////---MAIN FRAME VARS---////////
     JFrame accountFrame;
 
     JList historyViewer;
 
-    JButton deposit;
-    JButton withdraw;
-    JButton transfer;
+    Button deposit;
+    Button withdraw;
+    Button transfer;
 
     public ATM() {
         //set font to arial
@@ -109,12 +109,10 @@ public class ATM implements ActionListener {
         JPanel loginButtonPanel = new JPanel();
         loginButtonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         loginButtonPanel.setBackground(Color.white);
-        login = new JButton("Login");
-        styleButton(login, 55, 30);
+        login = new Button("Login", 55, 30);
         login.addActionListener(this);
 
-        newUser = new JButton("New User");
-        styleButton(newUser, 80, 30);
+        newUser = new Button("New User", 80, 30);
         newUser.addActionListener(this);
 
         loginButtonPanel.add(newUser);
@@ -162,7 +160,15 @@ public class ATM implements ActionListener {
         // icon scaling from user 'tirz'
         // via https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel/16345968
         logout = new JButton("Logout");
-        fixMouseOver(logout);
+        logout.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent evt) {
+                logout.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            public void mouseExited(MouseEvent evt) {
+                logout.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
         logout.setIcon(new ImageIcon(new ImageIcon("icons/logout_icon.png").getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
         logout.setHorizontalTextPosition(AbstractButton.LEADING);
         logout.setPreferredSize(new Dimension(82, 40));
@@ -204,14 +210,10 @@ public class ATM implements ActionListener {
         mainButtons.setBackground(Color.white);
         mainButtons.setLayout(new GridBagLayout());
 
-        view = new JButton("View Account");
-        styleButton(view, 55, 28);
+        view = new Button("View Account", 55, 28);
+        create = new Button("Create", 55, 28);
 
-        create = new JButton("Create");
-        styleButton(create, 55, 28);
-
-        delete = new JButton("Delete");
-        styleButton(delete, 55, 28);
+        delete = new Button("Delete", 55, 28);
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -300,14 +302,11 @@ public class ATM implements ActionListener {
         // account interaction buttons
         JPanel accountInteractionPanel = new JPanel();
         accountInteractionPanel.setBackground(Color.white);
-        deposit = new JButton("Deposit");
-        styleButton(deposit, 70, 28);
+        deposit = new Button("Deposit", 70, 28);
 
-        withdraw = new JButton("Withdraw");
-        styleButton(withdraw, 70, 28);
+        withdraw = new Button("Withdraw", 70, 28);
 
-        transfer = new JButton("Transfer");
-        styleButton(transfer, 70, 28);
+        transfer = new Button("Transfer", 70, 28);
 
         deposit.addActionListener(this);
         withdraw.addActionListener(this);
@@ -409,27 +408,6 @@ public class ATM implements ActionListener {
                 UIManager.put(key, new FontUIResource(font));
             }
         }
-    }
-
-    public void fixMouseOver(JButton j) {
-        j.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent evt) {
-                j.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            public void mouseExited(MouseEvent evt) {
-                j.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-    }
-
-    public void styleButton(JButton j, int w, int h) {
-        fixMouseOver(j);
-        j.setPreferredSize(new Dimension(w, h));
-        j.setOpaque(true);
-        j.setBackground(new Color(0, 80, 157));
-        j.setForeground(Color.white);
-        j.setBorder(new EmptyBorder(0, 0, 0, 0));
     }
 
     public static void main(String[] args) {
