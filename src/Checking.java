@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,7 +19,6 @@ public class Checking {
         accountNumber = randNum;
         transactionHistory += new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - Account created";
         ATM.checkingAccounts.add(this);
-        StdOut.println("Your new account number is: " + accountNumber);
     }
 
     // used when populating the List
@@ -50,7 +50,6 @@ public class Checking {
         accountBalance += amount;
 
         transactionHistory += ("@" + new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - deposited $" + amount);
-        StdOut.printf("You have successfully deposited $%.2f", amount);
     }
 
     public void withdraw(double amount) {
@@ -58,16 +57,18 @@ public class Checking {
             accountBalance -= amount;
 
             transactionHistory += ("@" + new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - withdrew $" + amount);
-            StdOut.printf("You have successfully withdrawn $" + amount);
         } else {
-            StdOut.println("You do not have enough money.");
+            JOptionPane.showMessageDialog(null,
+                    "You do not have enough money.",
+                    "Not Enough Money",
+                    JOptionPane.WARNING_MESSAGE);
         }
     }
 
     public void transfer(Checking c, double amount) {
         accountBalance -= amount;
-        c.accountBalance += amount;
-        c.transactionHistory += ("@" + new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - received $" + amount + " transfer from " + getAccountNumber());
+        c.withdraw(amount);
+        c.transactionHistory += ("@" + new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - received $" + amount + " from " + getAccountNumber());
         transactionHistory += ("@" + new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - transferred $" + amount + " to " + c.getAccountNumber());
     }
 

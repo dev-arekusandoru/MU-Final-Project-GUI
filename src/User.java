@@ -27,10 +27,6 @@ public class User {
         ATM.users.add(this);
     }
 
-    public int getNumberOfAccounts() {
-        return userCheckingAccounts.size();
-    }
-
     private void populateUserAccounts() {
         if (accountIdsToStore.charAt(0) == ' ') {
             accountIdsToStore = accountIdsToStore.substring(1);
@@ -53,36 +49,7 @@ public class User {
         }
     }
 
-    public void switchAccount(int newAccountId) {
-        if (newAccountId == currentAccount.getAccountNumber()) {
-            StdOut.println("You are already in account " + newAccountId);
-            return;
-        } else {
-            for (int i = 0; i < userCheckingAccounts.size(); i++) {
-                if (userCheckingAccounts.get(i).getAccountNumber() == newAccountId) {
-                    currentAccount = userCheckingAccounts.get(i);
-                    StdOut.println("You are now in account: " + currentAccount.getAccountNumber());
-                    return;
-                }
-                if (i == (userCheckingAccounts.size() - 1) && !(userCheckingAccounts.get(i).getAccountNumber() == newAccountId)) {
-                    StdOut.println("You do not have a checking account with that id.");
-                }
-            }
-        }
-    }
 
-    public String viewAllAccounts() {
-        String allAccounts = "";
-        if (userCheckingAccounts.size() >= 1) {
-            for (int i = 0; i < userCheckingAccounts.size(); i++) {
-                allAccounts += "Account Id : " + userCheckingAccounts.get(i).getAccountNumber()
-                        + " - Balance : $" + userCheckingAccounts.get(i).getAccountBalance() + "\n";
-            }
-        } else {
-            allAccounts = "There are no accounts for this user.";
-        }
-        return allAccounts;
-    }
 
     public String getUsername() {
         return username;
@@ -135,7 +102,7 @@ public class User {
                     return;
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            "TTransfer or withdraw all money before closing account.",
+                            "Transfer or withdraw all money before closing account.",
                             "Account Balance Error",
                             JOptionPane.WARNING_MESSAGE);
                 }

@@ -32,6 +32,14 @@ public class ATM implements ActionListener {
     JTextField loginUsername;
     JPasswordField loginPassword;
 
+    ////////---NEW USER FRAME VARS---////////
+    JFrame newUserFrame;
+
+    JTextField newUserUsername;
+    JPasswordField newUserPassword;
+
+    Button createUser;
+
     ////////---MAIN FRAME VARS---////////
     JFrame mainFrame;
 
@@ -50,7 +58,7 @@ public class ATM implements ActionListener {
     Button create;
     Button delete;
 
-    ////////---MAIN FRAME VARS---////////
+    ////////---ACCOUNT FRAME VARS---////////
     JFrame accountFrame;
     JLabel accountInfoLabel;
     JLabel accountBalanceLabel;
@@ -273,7 +281,7 @@ public class ATM implements ActionListener {
         //
         //Account information panel
         JPanel accountInfoPanel = new JPanel();
-        accountInfoPanel.setLayout(new GridLayout(2,2));
+        accountInfoPanel.setLayout(new GridLayout(2, 2));
         accountInfoPanel.setBackground(Color.white);
         accountInfoLabel = new JLabel("Account Id: ");
         accountBalanceLabel = new JLabel();
@@ -331,6 +339,9 @@ public class ATM implements ActionListener {
 
         accountFrame.pack();
         accountFrame.setVisible(false);
+
+//////////////////////////////////---New User Window---//////////////////////////////////
+        newUserFrame = new JFrame();
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -407,7 +418,71 @@ public class ATM implements ActionListener {
         }
 
         if (control == deposit) {
+            String m = JOptionPane.showInputDialog("Enter the amount to deposit");
+            try {
+                int depositAmount = Integer.parseInt(m);
+                currentAccount.deposit(depositAmount);
+                updateHistory();
+                accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Please enter a valid amount.",
+                        "Invalid Amount",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        }
 
+        if (control == withdraw) {
+            String m = JOptionPane.showInputDialog("Enter the amount to withdraw");
+            try {
+                int withdrawAmount = Integer.parseInt(m);
+                currentAccount.withdraw(withdrawAmount);
+                updateHistory();
+                accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Please enter a valid amount.",
+                        "Invalid Amount",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        }
+
+        if (control == transfer) {
+            Checking c;
+            String m = JOptionPane.showInputDialog("Enter the account number you\nwould like to transfer to");
+            try {
+                int transferId = Integer.parseInt(m);
+                for (int i = 0; i < checkingAccounts.size(); i++) {
+                    if (transferId == checkingAccounts.get(i).getAccountNumber()) {
+                        c = checkingAccounts.get(i);
+                        String n = JOptionPane.showInputDialog("Enter the amount to transfer.");
+                        try {
+                            double transferAmount = Integer.parseInt(n);
+                            currentAccount.transfer(c, transferAmount);
+                            break;
+                        } catch (Exception d) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Please enter a valid amount",
+                                    "Invalid Amount",
+                                    JOptionPane.WARNING_MESSAGE);
+                        }
+                    }
+                    if (transferId != checkingAccounts.get(i).getAccountNumber() && i == checkingAccounts.size() - 1) {
+                        JOptionPane.showMessageDialog(null,
+                                "Account Not Found",
+                                "Invalid Id",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+
+                }
+                updateHistory();
+                accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Please enter a valid ID",
+                        "Invalid Id",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
 
         //update data after every action, just for good measure
