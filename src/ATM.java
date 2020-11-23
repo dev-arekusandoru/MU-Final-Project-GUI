@@ -25,9 +25,9 @@ public class ATM implements ActionListener {
     public static User currentUser = null;
     public static Checking currentAccount = null;
 
-    public static Color themeC = new Color(35, 35, 35);
-    public static Color themeCinv = new Color(235, 235, 235);
-
+    public static Color themeC = new Color(255, 255, 255);
+    public static Color themeCinv = new Color(0, 0, 0);
+    public static boolean light = true;
 
     ////////---LOGIN FRAME VARS---////////
     JFrame loginFrame;
@@ -89,16 +89,6 @@ public class ATM implements ActionListener {
         //set font to arial
         setUIFont(new FontUIResource(new Font("Arial", 0, 15)));
         //set optionpanes to theme
-        UIManager UI = new UIManager();
-        UI.put("OptionPane.background", new ColorUIResource(themeC));
-        UI.put("Panel.background", new ColorUIResource(themeC));
-        UI.put("Label.foreground", new ColorUIResource(themeCinv));
-        UI.put("TitledBorder.titleColor", new ColorUIResource(themeCinv));
-        UI.put("ScrollPane.background", new ColorUIResource(themeC));
-        UI.put("List.foreground", new ColorUIResource(themeCinv));
-        UI.put("List.background", new ColorUIResource(themeCinv));
-        UI.put("Button.foreground", new ColorUIResource(themeCinv));
-        UI.put("TextField.background.", new ColorUIResource(themeC));
 ////////////////////////////////////---Login Window---////////////////////////////////////
         loginFrame = new JFrame();
         loginFrame.setTitle("Login");
@@ -566,6 +556,21 @@ public class ATM implements ActionListener {
             }
         }
 
+        if(control == settings) {
+            if(light) {
+                light = false;
+                themeC = new Color(35, 35, 35);
+                themeCinv = new Color(235, 235, 235);
+            } else if(!light) {
+                light = true;
+                themeC = new Color(255, 255, 255);
+                themeCinv = new Color(0, 0, 0);
+
+            }
+            //updateTheme(themeC, themeCinv);
+            StdOut.print(light);
+        }
+
         if (control == deposit) {
             String m = JOptionPane.showInputDialog("Enter the amount to deposit");
             try {
@@ -704,6 +709,26 @@ public class ATM implements ActionListener {
         }
         historyViewer.updateUI();
     }
+
+    public void updateTheme(Color themeC, Color themeCinv) {
+        mainFrame.setVisible(false);
+        UIManager UI = new UIManager();
+        UI.put("OptionPane.background", new ColorUIResource(themeC));
+        UI.put("OptionPane.messageForeground", new ColorUIResource(themeCinv));
+        UI.put("Panel.background", new ColorUIResource(themeC));
+        UI.put("Label.foreground", new ColorUIResource(themeCinv));
+        UI.put("TitledBorder.titleColor", new ColorUIResource(themeCinv));
+        UI.put("ScrollPane.background", new ColorUIResource(themeC));
+        UI.put("List.foreground", new ColorUIResource(themeCinv));
+        UI.put("List.background", new ColorUIResource(themeC));
+        UI.put("Button.foreground", new ColorUIResource(themeCinv));
+        UI.put("TextField.background", new ColorUIResource(themeC));
+        UI.put("TextField.foreground", new ColorUIResource(themeCinv));
+        UI.put("PasswordField.background", new ColorUIResource(themeC));
+        UI.put("PasswordField.foreground", new ColorUIResource(themeCinv));
+        mainFrame.pack();
+        mainFrame.setVisible(true);
+    };
 
     public static void setUIFont(FontUIResource f) {
         // font change method from Kumar Mitra
