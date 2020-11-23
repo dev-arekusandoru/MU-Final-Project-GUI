@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class User {
@@ -129,16 +130,15 @@ public class User {
                     }
                     userCheckingAccounts.remove(i);
                     ids[i] = "";
-                    StdOut.println("Account successfully deleted.");
                     String newIds = String.join("l", ids);
-                    StdOut.println(newIds);
                     accountIdsToStore = newIds;
                     return;
                 } else {
-                    StdOut.println("Transfer or withdraw all money before closing account.");
+                    JOptionPane.showMessageDialog(null,
+                            "TTransfer or withdraw all money before closing account.",
+                            "Account Balance Error",
+                            JOptionPane.WARNING_MESSAGE);
                 }
-            } else if (i == (userCheckingAccounts.size() - 1) && (c.getAccountNumber() != id)) {
-                StdOut.println("You do not have a checking account with that id.");
             }
         }
     }

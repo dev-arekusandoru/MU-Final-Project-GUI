@@ -52,6 +52,8 @@ public class ATM implements ActionListener {
 
     ////////---MAIN FRAME VARS---////////
     JFrame accountFrame;
+    JLabel accountInfoLabel;
+    JLabel accountBalanceLabel;
 
     JList historyViewer;
 
@@ -271,12 +273,15 @@ public class ATM implements ActionListener {
         //
         //Account information panel
         JPanel accountInfoPanel = new JPanel();
-        accountInfoPanel.setLayout(new BoxLayout(accountInfoPanel, BoxLayout.X_AXIS));
+        accountInfoPanel.setLayout(new GridLayout(2,2));
         accountInfoPanel.setBackground(Color.white);
-        JLabel accountInfoLabel = new JLabel("Account Id: ");
+        accountInfoLabel = new JLabel("Account Id: ");
+        accountBalanceLabel = new JLabel();
 
         accountInfoPanel.add(accountInfoLabel);
-        accountInfoPanel.add(Box.createHorizontalGlue());
+        accountInfoPanel.add(new JLabel());
+        accountInfoPanel.add(accountBalanceLabel);
+        accountInfoPanel.add(new JLabel());
 
         //transaction history default list model
         JPanel transactionHistoryPanel = new JPanel();
@@ -368,9 +373,42 @@ public class ATM implements ActionListener {
             }
 
             updateHistory();
+            accountFrame.setTitle(String.valueOf(currentAccount.getAccountNumber()));
+            accountInfoLabel.setText("Account ID: " + currentAccount.getAccountNumber());
+            accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
             accountFrame.setVisible(true);
         }
 
+        if (control == create) {
+            int input = JOptionPane.showConfirmDialog(null,
+                    "Do you want to create a new account?",
+                    "Confirm Action", JOptionPane.YES_NO_OPTION);
+            if (input == 0) {
+                Checking newAccount = new Checking();
+                currentUser.addAccount(newAccount);
+            }
+            updateAccounts();
+        }
+
+        if (control == delete) {
+            String accString = String.valueOf(accountViewer.getSelectedValue());
+            accString = accString.substring(accString.length() - 4, accString.length());
+            int deleteAccNum = Integer.parseInt(accString);
+            int input = JOptionPane.showConfirmDialog(null,
+                    "Are you sure you want to delete account " + deleteAccNum + "?",
+                    "Confirm Action", JOptionPane.YES_NO_OPTION);
+            if (input == 0) {
+                if (currentAccount.getAccountNumber() == deleteAccNum) {
+                    accountFrame.setVisible(false);
+                }
+                currentUser.removeAccount(deleteAccNum);
+                updateAccounts();
+            }
+        }
+
+        if (control == deposit) {
+
+        }
 
         //update data after every action, just for good measure
         writeToDataFile();
@@ -418,8 +456,7 @@ public class ATM implements ActionListener {
         for (int i = 0; i < currentUser.userCheckingAccounts.size(); i++) {
             if (currentUser.userCheckingAccounts.get(i) instanceof Saving) {
                 accountsModel.addElement("Saving: " + currentUser.userCheckingAccounts.get(i).getAccountNumber());
-            }
-            else {
+            } else {
                 accountsModel.addElement("Checking: " + currentUser.userCheckingAccounts.get(i).getAccountNumber());
             }
         }

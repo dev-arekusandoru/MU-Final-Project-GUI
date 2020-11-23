@@ -16,7 +16,7 @@ public class Checking {
             randNum = (int) (Math.random() * 9999) + 1;
         }
         accountNumber = randNum;
-        transactionHistory += "Account created - " + new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date());
+        transactionHistory += new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - Account created";
         ATM.checkingAccounts.add(this);
         StdOut.println("Your new account number is: " + accountNumber);
     }
