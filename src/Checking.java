@@ -66,8 +66,8 @@ public class Checking {
     }
 
     public void transfer(Checking c, double amount) {
-        accountBalance -= amount;
-        c.withdraw(amount);
+        withdraw(amount);
+        c.deposit(amount);
         c.transactionHistory += ("@" + new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - received $" + amount + " from " + getAccountNumber());
         transactionHistory += ("@" + new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()) + " - transferred $" + amount + " to " + c.getAccountNumber());
     }

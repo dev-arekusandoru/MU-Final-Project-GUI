@@ -89,6 +89,7 @@ public class ATM implements ActionListener {
         //set font to arial
         setUIFont(new FontUIResource(new Font("Arial", 0, 15)));
         //set optionpanes to theme
+        updateTheme(themeC, themeCinv);
 ////////////////////////////////////---Login Window---////////////////////////////////////
         loginFrame = new JFrame();
         loginFrame.setTitle("Login");
@@ -459,6 +460,7 @@ public class ATM implements ActionListener {
                 userInfoLabel.setText("Welcome, " + username);
                 updateAccounts();
                 mainFrame.setVisible(true);
+                currentAccount = currentUser.userCheckingAccounts.get(0);
                 loginUsername.setText("");
                 loginPassword.setText("");
             } else {
@@ -511,16 +513,13 @@ public class ATM implements ActionListener {
 
         if (control == view) {
             if (!accountViewer.isSelectionEmpty()) {
-                String accString = String.valueOf(accountViewer.getSelectedValue());
-                accString = accString.substring(accString.length() - 4, accString.length());
-                int viewAccNum = Integer.parseInt(accString);
+                String[] accString = String.valueOf(accountViewer.getSelectedValue()).split(" ");
+                int viewAccNum = Integer.parseInt(accString[1]);
                 for (int i = 0; i < currentUser.userCheckingAccounts.size(); i++) {
                     if (viewAccNum == currentUser.userCheckingAccounts.get(i).getAccountNumber()) {
                         currentAccount = currentUser.userCheckingAccounts.get(i);
                     }
                 }
-
-
                 updateHistory();
                 accountFrame.setTitle(String.valueOf(currentAccount.getAccountNumber()));
                 accountInfoLabel.setText("Account ID: " + currentAccount.getAccountNumber());
@@ -530,20 +529,29 @@ public class ATM implements ActionListener {
         }
 
         if (control == create) {
-            int input = JOptionPane.showConfirmDialog(null,
-                    "Do you want to create a new account?",
-                    "Confirm Action", JOptionPane.YES_NO_OPTION);
+            String[] options = {"Checking Account", "Saving Account", "Cancel"};
+            int input = JOptionPane.showOptionDialog(null,
+                    "Choose an account type",
+                    "Confirm Action", JOptionPane.YES_NO_OPTION,
+                    0,
+                    null,
+                    options,
+                    options[2]);
+
             if (input == 0) {
                 Checking newAccount = new Checking();
+                currentUser.addAccount(newAccount);
+            }
+            if (input == 1) {
+                Saving newAccount = new Saving();
                 currentUser.addAccount(newAccount);
             }
             updateAccounts();
         }
 
         if (control == delete) {
-            String accString = String.valueOf(accountViewer.getSelectedValue());
-            accString = accString.substring(accString.length() - 4, accString.length());
-            int deleteAccNum = Integer.parseInt(accString);
+            String[] accString = String.valueOf(accountViewer.getSelectedValue()).split(" ");
+            int deleteAccNum = Integer.parseInt(accString[1]);
             int input = JOptionPane.showConfirmDialog(null,
                     "Are you sure you want to delete account " + deleteAccNum + "?",
                     "Confirm Action", JOptionPane.YES_NO_OPTION);
@@ -557,26 +565,17 @@ public class ATM implements ActionListener {
         }
 
         if(control == settings) {
-            if(light) {
-                light = false;
-                themeC = new Color(35, 35, 35);
-                themeCinv = new Color(235, 235, 235);
-            } else if(!light) {
-                light = true;
-                themeC = new Color(255, 255, 255);
-                themeCinv = new Color(0, 0, 0);
+            settingsFrame.setVisible(true);
 
-            }
-            //updateTheme(themeC, themeCinv);
-            StdOut.print(light);
         }
 
         if (control == deposit) {
             String m = JOptionPane.showInputDialog("Enter the amount to deposit");
             try {
-                int depositAmount = Integer.parseInt(m);
+                double depositAmount = Double.parseDouble(m);
                 currentAccount.deposit(depositAmount);
                 updateHistory();
+                updateAccounts();
                 accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
@@ -589,9 +588,10 @@ public class ATM implements ActionListener {
         if (control == withdraw) {
             String m = JOptionPane.showInputDialog("Enter the amount to withdraw");
             try {
-                int withdrawAmount = Integer.parseInt(m);
+                double withdrawAmount = Double.parseDouble(m);
                 currentAccount.withdraw(withdrawAmount);
                 updateHistory();
+                updateAccounts();
                 accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
@@ -630,6 +630,7 @@ public class ATM implements ActionListener {
 
                 }
                 updateHistory();
+                updateAccounts();
                 accountBalanceLabel.setText("Balance: $" + currentAccount.getAccountBalance());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
@@ -678,9 +679,15 @@ public class ATM implements ActionListener {
     public void writeToDataFile() {
         Out out = new Out("accountData.txt");
         for (int i = 0; i < checkingAccounts.size(); i++) {
-            Checking c = checkingAccounts.get(i);
-            String toWrite = c.getAccountNumber() + "," + c.getAccountBalance() + "," + c.getTransactionHistory();
-            out.println(toWrite);
+            if(checkingAccounts.get(i) instanceof Saving) {
+                Saving c = (Saving) checkingAccounts.get(i);
+                String toWrite = c.getAccountNumber() + "," + c.getAccountBalance() + "," + c.getTransactionHistory() + ",s," + c.getLastMonthChecked() + "," + c.getNumOfTransactions();
+                out.println(toWrite);
+            } else {
+                Checking c = checkingAccounts.get(i);
+                String toWrite = c.getAccountNumber() + "," + c.getAccountBalance() + "," + c.getTransactionHistory() + ",c";
+                out.println(toWrite);
+            }
         }
         Out userOut = new Out("userData.txt");
         for (int i = 0; i < users.size(); i++) {
@@ -693,9 +700,11 @@ public class ATM implements ActionListener {
         accountsModel.clear();
         for (int i = 0; i < currentUser.userCheckingAccounts.size(); i++) {
             if (currentUser.userCheckingAccounts.get(i) instanceof Saving) {
-                accountsModel.addElement("Saving: " + currentUser.userCheckingAccounts.get(i).getAccountNumber());
+                accountsModel.addElement("Saving: " + currentUser.userCheckingAccounts.get(i).getAccountNumber()
+                        + "  -  $" + currentUser.userCheckingAccounts.get(i).getAccountBalance());
             } else {
-                accountsModel.addElement("Checking: " + currentUser.userCheckingAccounts.get(i).getAccountNumber());
+                accountsModel.addElement("Checking: " + currentUser.userCheckingAccounts.get(i).getAccountNumber()
+                        + "  -  $" + currentUser.userCheckingAccounts.get(i).getAccountBalance());
             }
         }
         accountScroll.updateUI();
@@ -711,7 +720,6 @@ public class ATM implements ActionListener {
     }
 
     public void updateTheme(Color themeC, Color themeCinv) {
-        mainFrame.setVisible(false);
         UIManager UI = new UIManager();
         UI.put("OptionPane.background", new ColorUIResource(themeC));
         UI.put("OptionPane.messageForeground", new ColorUIResource(themeCinv));
@@ -726,8 +734,6 @@ public class ATM implements ActionListener {
         UI.put("TextField.foreground", new ColorUIResource(themeCinv));
         UI.put("PasswordField.background", new ColorUIResource(themeC));
         UI.put("PasswordField.foreground", new ColorUIResource(themeCinv));
-        mainFrame.pack();
-        mainFrame.setVisible(true);
     };
 
     public static void setUIFont(FontUIResource f) {
@@ -752,7 +758,11 @@ public class ATM implements ActionListener {
         for (int i = 0; i < storedAccountData.length; i++) {
             String[] tempNewAccount = storedAccountData[i].split(",");
             // store to accounts List
-            new Checking(Integer.parseInt(tempNewAccount[0]), Double.parseDouble(tempNewAccount[1]), tempNewAccount[2]);
+            if(tempNewAccount[3].equals("c")) {
+                new Checking(Integer.parseInt(tempNewAccount[0]), Double.parseDouble(tempNewAccount[1]), tempNewAccount[2]);
+            } else if(tempNewAccount[3].equals("s")) {
+                new Saving(Integer.parseInt(tempNewAccount[0]), Double.parseDouble(tempNewAccount[1]), tempNewAccount[2], Integer.parseInt(tempNewAccount[4]), Integer.parseInt(tempNewAccount[5]));
+            }
         }
 
         // populate userData and users ArrayLists from userData.txt

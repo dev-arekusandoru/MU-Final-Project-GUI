@@ -1,10 +1,13 @@
-9012,190.0,10-11-2020 : 00:35 - Account created@12-11-2020 : 08:04 - deposited $100.0@23-11-2020 : 15:40 - deposited $100.0@23-11-2020 : 15:41 - withdrew $10.0
-6884,0.0,10-11-2020 : 01:03 - Account created
-6560,0.0,10-11-2020 : 12:12 - Account created
-2230,99.0,12-11-2020 : 12:42 - Account created@12-11-2020 : 12:42 - deposited $20.0@23-11-2020 : 15:50 - received $10.0 transfer from 5383@23-11-2020 : 15:53 - transferred $31.0 to 5383@23-11-2020 : 15:54 - deposited $100.0
-8037,9999976.55,21-11-2020 : 10:19 - Account created@21-11-2020 : 10:20 - deposited $1.0E7@21-11-2020 : 10:21 - transferred $23.45 to 7327
-7327,23.45,21-11-2020 : 10:20 - Account created@21-11-2020 : 10:21 - received $23.45 transfer from 8037
-1234,0.0,22-11-2020 : 01:47 - Account created
-6462,0.0,23-11-2020 : 14:56 - Account created
-5383,54.0,23-11-2020 : 14:56 - Account created@23-11-2020 : 15:35 - deposited $10.0@23-11-2020 : 15:35 - deposited $23.0@23-11-2020 : 15:50 - transferred $10.0 to 2230@23-11-2020 : 15:53 - received $31.0 from 2230
-5610,0.0,23-11-2020 : 16:23 - Account created
+9012,289.0,10-11-2020 : 00:35 - Account created@12-11-2020 : 08:04 - deposited $100.0@23-11-2020 : 15:40 - deposited $100.0@23-11-2020 : 15:41 - withdrew $10.0@23-11-2020 : 21:22 - deposited $99.0@23-11-2020 : 21:22 - received $99.0 from 2998,c
+6884,0.0,10-11-2020 : 01:03 - Account created,c
+6560,0.0,10-11-2020 : 12:12 - Account created,c
+2230,99.0,12-11-2020 : 12:42 - Account created@12-11-2020 : 12:42 - deposited $20.0@23-11-2020 : 15:50 - received $10.0 transfer from 5383@23-11-2020 : 15:53 - transferred $31.0 to 5383@23-11-2020 : 15:54 - deposited $100.0,c
+8037,9999544.55,21-11-2020 : 10:19 - Account created@21-11-2020 : 10:20 - deposited $1.0E7@21-11-2020 : 10:21 - transferred $23.45 to 7327@23-11-2020 : 20:07 - transferred $432.0 to 7327,c
+7327,23.45,21-11-2020 : 10:20 - Account created@21-11-2020 : 10:21 - received $23.45 transfer from 8037@23-11-2020 : 20:07 - received $432.0 from 8037,c
+1234,0.0,22-11-2020 : 01:47 - Account created,c
+6462,0.0,23-11-2020 : 14:56 - Account created,c
+5383,54.0,23-11-2020 : 14:56 - Account created@23-11-2020 : 15:35 - deposited $10.0@23-11-2020 : 15:35 - deposited $23.0@23-11-2020 : 15:50 - transferred $10.0 to 2230@23-11-2020 : 15:53 - received $31.0 from 2230,c
+5610,0.0,23-11-2020 : 16:23 - Account created,c
+730,0.0,23-11-2020 : 21:29 - Account created,s,11,0
+7717,0.0,23-11-2020 : 21:29 - Account created,c
+7080,10.0,23-11-2020 : 21:29 - Account created@23-11-2020 : 21:33 - deposited $10.0,s,11,1

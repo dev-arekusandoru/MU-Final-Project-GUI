@@ -10,7 +10,13 @@ public class Saving extends Checking {
 
     public Saving() {
         super();
-        lastMonthChecked = Integer.parseInt(super.transactionHistory.substring(20, 22));
+        lastMonthChecked = Integer.parseInt(super.transactionHistory.substring(3, 5));
+    }
+
+    public Saving(int accountNum, double amount, String history, int lmc, int not) {
+        super(accountNum, amount, history);
+        lastMonthChecked = lmc;
+        numOfTransactions = not;
     }
 
     public void deposit(double amount) {
@@ -33,6 +39,12 @@ public class Saving extends Checking {
         }
     }
 
+    public int getNumOfTransactions() {
+        return numOfTransactions;
+    };
+    public int getLastMonthChecked() {
+        return lastMonthChecked;
+    }
 
     public void resetNumOfTransactions() {
         int currentMonth = Integer.parseInt(new SimpleDateFormat("dd-MM-yyyy : HH:mm").format(new Date()).substring(3, 5));
