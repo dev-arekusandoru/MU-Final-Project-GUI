@@ -82,7 +82,6 @@ public class ATM implements ActionListener {
     Button changeUsername;
     Button changePassword;
     Button deleteAccount;
-    Button theme;
 
 
     public ATM() {
@@ -420,12 +419,12 @@ public class ATM implements ActionListener {
         newUserFrame.setVisible(false);
 
 //////////////////////////////////---Settings Window---//////////////////////////////////
-        JFrame settingsFrame = new JFrame();
-        settingsFrame.setTitle("New User");
+        settingsFrame = new JFrame();
+        settingsFrame.setTitle("Settings");
 
         //sets the location of the initial window
-        settingsFrame.setLocation(400, 150);
-        //mainFrame.setPreferredSize(new Dimension(250, 175));
+        settingsFrame.setLocation(500, 250);
+        settingsFrame.setPreferredSize(new Dimension(175, 150));
         settingsFrame.setResizable(false);
 
         //exits the program when the window is closed
@@ -435,18 +434,25 @@ public class ATM implements ActionListener {
         JPanel settingsMainPanel = (JPanel) settingsFrame.getContentPane();
 
         //sets the layout of the mainPanel
-        settingsMainPanel.setLayout(new BoxLayout(settingsMainPanel, BoxLayout.Y_AXIS));
+        GridLayout g = new GridLayout(3, 1);
+        g.setVgap(6);
+        settingsMainPanel.setLayout(g);
 
         //creates and sets an empty border
-        settingsMainPanel.setBorder(emptyBorder);
-
-        JPanel settingsButtons = new JPanel();
+        settingsMainPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
 
-        settingsMainPanel.add(settingsButtons);
+        Border emptySettingsBorder = new EmptyBorder(0, 15, 15, 0);
+        changeUsername = new Button("  Change Username  ", 250, 30);
+        changePassword = new Button("  Change Password  ", 150, 30);
+        deleteAccount = new Button("  Delete Account  ", 150, 30);
+
+        settingsMainPanel.add(changeUsername);
+        settingsMainPanel.add(changePassword);
+        settingsMainPanel.add(deleteAccount);
 
         settingsFrame.pack();
-        settingsFrame.setVisible(false);
+        settingsFrame.setVisible(true);
 
     }
 
@@ -566,7 +572,6 @@ public class ATM implements ActionListener {
 
         if(control == settings) {
             settingsFrame.setVisible(true);
-
         }
 
         if (control == deposit) {
